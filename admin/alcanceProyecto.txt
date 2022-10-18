@@ -1,0 +1,66 @@
+Ante la situación de escasez de agua apta para el consumo humano que sufren muchas zonas 
+del planeta, o los problemas de abastecimiento puntuales a raíz de catástrofes naturales, esta 
+opción es una tecnología viable y cada vez más desarrollada. Sin embargo, el inconveniente 
+al que se enfrenta es el hecho de que la cantidad de agua obtenida dependa de la temperatura
+y humedad relativa. El dispositivo que aquí se diseña, trata de resolver la falta de 
+abastecimiento de agua en El Carmen, ubicado en la provincia de Jujuy, donde la mala 
+calidad de las aguas superficiales pone en riesgo la salud de la población que las utiliza. 
+
+Para conseguir agua a partir de la humedad, es necesario enfriar una corriente de aire, de 
+modo que el agua en estado gaseoso se condense en una superficie de la que pueda ser 
+recogida. Este proyecto se basa, en definitiva, en la aplicación de la tecnología frigorífica y de 
+la psicrometría (ciencia que estudia las propiedades del aire húmedo) para conseguir tal 
+efecto.
+Actualmente existen diversas empresas que comercializan máquinas condensadoras capaces 
+de trabajar en un amplio rango de condiciones climáticas, pero con rendimientos mejorables. 
+Por ello, ante un problema tan concreto como el del agua en el Amazonas, este trabajo surge 
+de la necesidad de diseñar una máquina optimizada al máximo para unas condiciones 
+climáticas conocidas.
+En este proyecto se aplica un ciclo de compresión mecánica simple, donde un refrigerante 
+recorre un ciclo cerrado, evaporándose a una baja temperatura y condensándose a una 
+temperatura mayor. Esta diferencia de temperaturas, que permite extraer calor de la corriente 
+de aire que se deseca, es posible gracias al aporte de potencia por parte de un compresor.
+A pesar de que los ciclos de compresión mecánica simple están muy extendidos y existen 
+gran cantidad de fabricantes de sus componentes, una aplicación tan concreta como la de 
+este trabajo dará lugar a que algunos de ellos deban ser diseñados expresamente. Tal será 
+el caso del evaporador y del condensador.
+El evaporador es el componente donde el fluido refrigerante se evapora extrayendo calor de 
+la corriente de aire. A raíz de la disminución de temperatura en el aire, sobre las paredes del 
+evaporador se formarán gotas de agua condesadas. Para asegurar el mejor funcionamiento 
+en el emplazamiento ya descrito, el evaporador de la máquina de este trabajo está diseñado 
+para alcanzar una temperatura mínima de 14ºC.
+El condensador es el componente que sirve de sumidero de calor del ciclo. En él, el 
+refrigerante se condensa, cediendo calor al ambiente o a cualquier otro foco capaz de 
+enfriarlo. Para cumplir con los requisitos térmicos del dispositivo, el condensador aquí 
+diseñado permanecerá a 32 ºC.RESUMEN
+2 
+El resto de componentes son seleccionados de catálogos, de forma que el dispositivo sea 
+capaz de generar 1 m3 de agua diario, consumiendo no más de 10 kW eléctricos, en trifásica 
+y a 60 Hz. Del mismo modo se selecciona el refrigerante más adecuado para el ciclo, con 
+especial atención a sus características medioambientales.
+Tan importante como el cálculo y el diseño será el análisis del funcionamiento del dispositivo 
+realizado. Para ello se simula, con ayuda de software especializado como EES o CoolPack, 
+su rendimiento con distintas condiciones ambientales.
+Los resultados de las simulaciones dan una idea del precio final del agua obtenida, que roza 
+los 29 €/m3
+(incluyendo procesos de depuración, consumibles y amortización de la máquina),
+frente a los cerca de 104 €/m3 del agua embotellada o los 50 €/m3 de otras máquinas 
+condensadores no optimizadas para el Amazonas colombiano.
+A pesar de que en este trabajo sólo se diseñe el ciclo frigorífico del dispositivo, una máquina 
+de estas características precisa de una estación de depuración de aguas y una unidad de 
+control del ciclo termodinámico y de depuración. Bajo el paraguas del proyecto de la máquina 
+condensadora de agua se han realizado, en la Escuela Técnica Superior de Ingenieros 
+Industriales, otros trabajos que contemplan estos aspectos. Durante la realización de este 
+trabajo se ha participado en estos proyectos asociados.
+También se ha trabajado con el compañero encargado de aplicar un ciclo de absorción en vez 
+del de compresión mecánica simple para el mismo fin.
+Independientemente del modo en el que se enfríe el aire para obtener agua, como se concluye 
+en este trabajo, este método es una opción realista ante un problema que exige soluciones 
+responsables y adaptables a distintos escenarios. Se concluye por tanto este trabajo 
+explicando el modo de aplicar los procedimientos de cálculo y diseño para la optimización de 
+un dispositivo en otro emplazamiento.
+Se proponen también líneas futuras de trabajo, como la fabricación del prototipo del dispositivo 
+diseñado o la adaptación a fuentes de energía renovables, como la solar fotovoltaica. Una 
+máquina de las características aquí detalladas, capaz de asegurarse el suministro de energía 
+de forma autónoma, podrá resolver en gran medida los problemas de abastecimiento de agua 
+potable en zonas remotas.
