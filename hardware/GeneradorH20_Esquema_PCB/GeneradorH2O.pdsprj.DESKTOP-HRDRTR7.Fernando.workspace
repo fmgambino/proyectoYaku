@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
 <WORKSPACE>
- <FRAME activewindow="0">
+ <FRAME activewindow="2">
   <PLACEMENT>2c0000000200000003000000ffffffffffffffffffffffffffffffffcd00000015000000db040000ce020000</PLACEMENT>
   <WINDOW type="default" module="ISIS"/>
   <WINDOW type="default" module="ARES"/>
@@ -12,7 +12,6 @@
    </camera>
   </WINDOW>
   <WINDOW type="default" module="BOM"/>
-  <WINDOW type="package" module="LIBMAN"/>
  </FRAME>
  <MODULE name="VSMDEBUG">
   <PWI/>
