@@ -286,10 +286,10 @@
         console.log("Error al Suscribir");
       } else {
         console.log("Suscrito al Broker con Exito!");
-        console.log("Proyecto de Inversión");
+        console.log("Proyecto de final - UTN - FRT");
         console.log("San Miguel de Tucumán - Tucumán - Argentina");
-        console.log("by ELECTRÓNICA GAMBINO");
-        console.log("2022");
+        console.log("by AUGUSTO ARRUETA");
+        console.log("2023");
       }
 
     })
