@@ -211,7 +211,7 @@ client.on('connect', () => {
             console.log("Suscrito al Broker con Exito!");
             console.log("Proyecto de Inversión");
             console.log("San Miguel de Tucumán - Tucumán - Argentina");
-            console.log("2022");
+            console.log("2025");
         }
 
     })

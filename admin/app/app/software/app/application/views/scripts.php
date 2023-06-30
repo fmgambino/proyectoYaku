@@ -85,7 +85,7 @@
         console.log("Proyecto Final de Carrera");
         console.log("San Miguel de Tucumán - Tucumán - Argentina");
         console.log("UTN - FRT");
-        console.log("2021");
+        console.log("2024");
       }
 
     })
