@@ -90,7 +90,7 @@ let mensajeOptico = 'Alto' ;
         estadoConexion = 0;
       } else {
         console.log("Suscrito al Broker con Exito!");
-        console.log("Proyecto Final de Carrera");
+        console.log("Proyecto Final de Carrera AQUI");
         console.log("San Miguel de Tucumán - Tucumán - Argentina");
         console.log("UTN - FRT");
         console.log("2022");
