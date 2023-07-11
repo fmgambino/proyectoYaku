@@ -1,0 +1,8 @@
+{
+    "cmake.sourceDirectory": "D:/01 FERNANDO GAMBINO/00 ELECTRÓNICA GAMBINO/00 CLIENTES/proyectoYaku/software/firmware_Yaku_V1/.pio/libdeps/esp32doit-devkit-v1/Adafruit BusIO",
+    "ocaml.sandbox": {
+        "kind": "custom",
+        "template": "$prog $args"
+    },
+    "C_Cpp.errorSquiggles": "enabled"
+}

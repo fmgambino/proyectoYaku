@@ -1,0 +1,2 @@
+D:/01 FERNANDO GAMBINO/00 ELECTRÓNICA GAMBINO/00 CLIENTES/proyectoYaku/software/firmware_Yaku_V1/build/CMakeFiles/ALL_BUILD.dir
+D:/01 FERNANDO GAMBINO/00 ELECTRÓNICA GAMBINO/00 CLIENTES/proyectoYaku/software/firmware_Yaku_V1/build/CMakeFiles/ZERO_CHECK.dir

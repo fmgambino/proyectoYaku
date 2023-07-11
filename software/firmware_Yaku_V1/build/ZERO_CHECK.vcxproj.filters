@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\01 FERNANDO GAMBINO\00 ELECTRÓNICA GAMBINO\00 CLIENTES\proyectoYaku\software\firmware_Yaku_V1\build\CMakeFiles\e93575e257035e9855be6fe2966e2063\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{B39D9935-AEC6-397C-B61C-97045CA8D504}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
