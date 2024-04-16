@@ -1,6 +1,7 @@
 {
-    "cmake.sourceDirectory": "D:/00 ELECTRONICA GAMBINO/01 CLIENTES/94 AUGUSTO JUJUY/proyectoYaku/software/Firmware_Yakubox_V1_sebasCasco/.pio/libdeps/esp32dev/WiFiManager",
+    "cmake.sourceDirectory": "D:/01 FERNANDO GAMBINO/00 ELECTRÓNICA GAMBINO/00 CLIENTES/94 AUGUSTO JUJUY/proyectoYaku/software/Firmware_Yakubox_V1_sebasCasco/.pio/libdeps/esp32doit-devkit-v1/Adafruit BusIO",
     "ocaml.sandbox": {
-        "kind": "global"
+        "kind": "custom",
+        "template": "$prog $args"
     }
 }

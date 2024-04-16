@@ -143,7 +143,7 @@ char *estado;
 const String serial_number = "505050";
 const String insert_password = "285289";
 const String get_data_password = "420285";
-const char *server = "yakubox.tk";
+const char *server = "yakubox.info";
 
 // MQTT
 const char *mqtt_server = "broker.emqx.io";

@@ -9,7 +9,7 @@
 #include <WiFiManager.h>
 #include <Separador.h>
 #include <PubSubClient.h>
-#include <WiFiClientSecure.h>
+//#include <WiFiClientSecure.h>
 
 #include <SPI.h>
 #include <Wire.h>             // libreria para bus I2C
@@ -137,11 +137,11 @@ char *estado;
 const String serial_number = "797179";
 const String insert_password = "285289";
 const String get_data_password = "420285";
-const char *server = "yakubox.tk";
+const char *server = "yakubox.info";
 
 // MQTT
 const char *mqtt_server = "broker.emqx.io";
-const int mqtt_port = 8883;
+const int mqtt_port = 1883;
 
 // no completar, el dispositivo se encargará de averiguar qué usuario y qué contraseña mqtt debe usar.
 char mqtt_user[20] = "";
@@ -150,9 +150,9 @@ char mqtt_pass[20] = "";
 const int expected_topic_length = 26;
 
 WiFiManager wifiManager;
-WiFiClientSecure client;
+WiFiClient client;
 PubSubClient mqttclient(client);
-WiFiClientSecure client2;
+WiFiClient client2;
 
 Separador s;
 
@@ -218,6 +218,17 @@ int i=0;
 int eHO2;
 int nivOptico;
 
+//VARIABLES GLOBALES P/SOTE PROCESING EN DB
+float data_2; // TEMP (dht22)
+float data_3; // HUM (dht22)
+float data_4; // PH
+float data_5; // TEMP H2O (ds18b20)
+float data_6; // VOLUMEN (HC-SR04)
+float data_7; // NIVEL BATERÍA
+float data_8; // ESTADO SWITCH
+float data_9;
+float data_10;
+
 void setup()
 {
   Serial.begin(115200); // inicializa comunicacion serie a 1155200 bps
@@ -253,7 +264,7 @@ void setup()
 
   pinMode(WIFI_PIN, INPUT_PULLUP);
 
-  wifiManager.autoConnect("LIANDEV Admin");
+  wifiManager.autoConnect("YAKUBOX Admin");
   oledWiFiConect();
   Serial.println("Conexión a WiFi exitosa!");
 
@@ -310,7 +321,7 @@ void loop()
     {
       // set mqtt cert
 
-      String to_send = String(nivCap) + "," + String(temp) + "," + String(nivOptico) + "," + String(sw1) + "," + String(eHO2);
+      String to_send = String(data_2) + "," + String(data_3) + "," + String(data_4) + "," + String(data_5) + "," + String(data_6);
       to_send.toCharArray(msg, 60);
       mqttclient.publish(device_topic_publish, msg);
 
@@ -378,7 +389,7 @@ void reconnect()
     // Trying SSL MQTT connection
     if (mqttclient.connect(clientId.c_str(), mqtt_user, mqtt_pass))
     {
-      Serial.println("Connected!");
+      Serial.println("Connected!"); 
       // We subscribe to topic
 
       mqttclient.subscribe(device_topic_subscribe);
@@ -422,6 +433,7 @@ bool get_topic(int length)
     while (client2.connected())
     {
       String line = client2.readStringUntil('\n');
+      Serial.println("Lectura String Until. ");
       if (line == "\r")
       {
         Serial.println("Headers recibidos - ok");
@@ -480,7 +492,7 @@ void send_to_database()
   {
     Serial.println("Conectados a servidor para insertar en db - ok");
     // Haciendo solitud por HTTP a DB
-    String data = "idp=" + insert_password + "&sn=" + serial_number + "&nivCap=" + String(nivCap) + "&temp=" + String(temp) + "\r\n";
+    String data = "idp=" + insert_password + "&sn=" + serial_number + "&nivCap=" + String(data_2) + "&temp=" + String(data_3) + "\r\n";
     client2.print(String("POST ") + "/app/insertdata/insert" + " HTTP/1.1\r\n" +
                   "Host: " + server + "\r\n" +
                   "Content-Type: application/x-www-form-urlencoded" + "\r\n" +
@@ -595,7 +607,7 @@ void Temp()
   int promedio = sum / 100;
   int y = promedio;
   int x = (1000 * ( y ) / 9107.0) + 6.5;
-  temp = x; // Variable de temperatura que se va a mostrar
+  data_2 = temp = x; // Variable de temperatura que se va a mostrar
   Serial.print("TEMP= ");
   Serial.println(temp); 
   // delay(10);

@@ -138,18 +138,18 @@ char *estado;
 //************************************
 // estos datos deben estar configurador también en las constantes de tu panel
 //  NO USES ESTOS DATOS PON LOS TUYOS!!!!
-const String serial_number = "505050";
+const String serial_number = "797179";
 const String insert_password = "285289";
 const String get_data_password = "420285";
-const char *server = "yakubox.tk";
+const char *server = "yakubox.info";
 
 // MQTT
 const char *mqtt_server = "broker.emqx.io";
 const int mqtt_port = 8883;
 
 // no completar, el dispositivo se encargará de averiguar qué usuario y qué contraseña mqtt debe usar.
-char mqtt_user[20] = "";
-char mqtt_pass[20] = "";
+char mqtt_user[20] = "6aL4uU9b5axRmJv";
+char mqtt_pass[20] = "zPPJmrLtUGuFcln";
 
 const int expected_topic_length = 26;
 
@@ -205,6 +205,17 @@ char device_topic_publish[40];
 char msg[60];
 long milliseconds = 0;
 
+//VARIABLES GLOBALES P/SOTE PROCESING EN DB
+float data_2; // TEMP (dht22)
+float data_3; // HUM (dht22)
+float data_4; // PH
+float data_5; // TEMP H2O (ds18b20)
+float data_6; // VOLUMEN (HC-SR04)
+float data_7; // NIVEL BATERÍA
+float data_8; // ESTADO SWITCH
+float data_9;
+float data_10;
+
 byte sw1 = 0; // BOMBA DE AGUA - Variable Global de Inicializacion
 
 int temp;
@@ -252,8 +263,6 @@ void setup()
   digitalWrite(relay2, LOW);
   digitalWrite(bomba, LOW);
   digitalWrite(mosfet2, LOW);
-
-  Serial.begin(115200);
 
   pinMode(WIFI_PIN, INPUT_PULLUP);
 
@@ -313,7 +322,7 @@ void loop()
       {
         // set mqtt cert
 
-        String to_send = String(nivCap) + "," + String(temp) + "," + String(nivOptico) + "," + String(sw1) + "," + String(eHO2);
+        String to_send = String(data_2) + "," + String(data_3) + "," + String(data_4) + "," + String(data_5) + "," + String(data_6); + "," + String(eHO2);
         to_send.toCharArray(msg, 60);
         mqttclient.publish(device_topic_publish, msg);
 
@@ -380,7 +389,7 @@ void reconnect()
     // Trying SSL MQTT connection
     if (mqttclient.connect(clientId.c_str(), mqtt_user, mqtt_pass))
     {
-      Serial.println("Connected!");
+      Serial.println("Conectado!");
       // We subscribe to topic
 
       mqttclient.subscribe(device_topic_subscribe);
@@ -420,6 +429,10 @@ bool get_topic(int length)
                   "Connection: close\r\n\r\n");
 
     Serial.println("Solicitud enviada - ok");
+    Serial.println("Get Data: ");
+    Serial.print(get_data_password);
+    Serial.println("Get Data: ");
+    Serial.println(serial_number );
 
     while (client2.connected())
     {
