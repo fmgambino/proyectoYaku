@@ -10,13 +10,6 @@
 #include <Separador.h>
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
-#include <DHT.h>
-
-#define DHTPIN 34   // Pin de datos del sensor DHT22
-#define DHTTYPE DHT22 // Tipo de sensor DHT22
-
-DHT dht(DHTPIN, DHTTYPE);
-
 
 
 
@@ -24,8 +17,12 @@ DHT dht(DHTPIN, DHTTYPE);
 //*********** CONFIG **************
 //*********************************
 
+
 #define WIFI_PIN 17
 #define LED 2 //On Board LED
+
+// Pin al que está conectado el sensor DHT22
+#define DHT_PIN 34
 
 int brightness = 0;    // how bright the LED is
 int fadeAmount = 5;    // how many points to fade the LED by
@@ -105,6 +102,8 @@ int data_10;
 
 
 void setup() {
+
+  Serial.begin(115200);
   randomSeed(analogRead(0));
 
 
@@ -115,10 +114,7 @@ void setup() {
 
   // attach the channel to the GPIO2 to be controlled
   ledcAttachPin(LED, ledChannel);
-
-  Serial.begin(115200);
-  dht.begin();
-
+  
   pinMode(WIFI_PIN,INPUT_PULLUP);
 
   wifiManager.autoConnect("YAKU Admin");
@@ -366,32 +362,65 @@ void send_to_database(){
 
 
 //FUNCION SENSOR DHT22 (HUM & TEMP AMBIENTE)
+void fDht22() {
+  // Iniciar comunicación con el sensor
+  pinMode(DHT_PIN, OUTPUT);
+  digitalWrite(DHT_PIN, HIGH); // Establecer el pin en HIGH durante el inicio
+  delay(20);  // Esperar 20ms
+  digitalWrite(DHT_PIN, LOW);  // Bajar el pin durante al menos 18ms
+  delay(20);  // Esperar 20ms
+  digitalWrite(DHT_PIN, HIGH); // Subir el pin
+  delayMicroseconds(30);  // Esperar 30us
+  pinMode(DHT_PIN, INPUT_PULLUP); // Cambiar el pin a INPUT_PULLUP
 
-void fDht22(){
+  // Esperar a que el sensor responda
+  while(digitalRead(DHT_PIN) == HIGH);
 
-// Leer la temperatura y la humedad del sensor
-  float sTemp = dht.readTemperature();
-  float sHum = dht.readHumidity();
+  // Esperar a que el sensor termine de enviar el primer pulso (respuesta)
+  while(digitalRead(DHT_PIN) == LOW);
 
-  // Verificar si se leyó correctamente la información
-  if (isnan(sTemp) || isnan(sHum)) {
-    Serial.println("Fallo al leer el sensor DHT22!");
-    return;
+  // Esperar a que el sensor termine de enviar el segundo pulso (datos)
+  while(digitalRead(DHT_PIN) == HIGH);
+
+  // Leer los datos del sensor
+  int data[5] = {0, 0, 0, 0, 0};
+  for(int i = 0; i < 5; i++) {
+    for(int j = 7; j >= 0; j--) {
+      while(digitalRead(DHT_PIN) == LOW); // Esperar inicio de pulso
+
+      // Esperar a que el pulso termine
+      unsigned long startTime = micros();
+      while(digitalRead(DHT_PIN) == HIGH);
+      unsigned long duration = micros() - startTime;
+
+      // Si la duración es mayor a 50us, entonces el bit es un 1, de lo contrario es un 0
+      if(duration > 50) {
+        data[i] |= (1 << j);
+      }
+    }
   }
 
-  // Imprimir los valores de temperatura y humedad
-  Serial.print("Temperatura: ");
-  Serial.print(sTemp);
-  Serial.print(" °C");
-  Serial.print("  Humedad: ");
-  Serial.print(sHum);
-  Serial.print("%");
-  Serial.println();
+  // Verificar la suma de comprobación
+  if(data[4] == ((data[0] + data[1] + data[2] + data[3]) & 0xFF)) {
+    int humidity = data[0] * 10 + data[1];
+    int temperature = (data[2] & 0x7F) * 10 + data[3];
+    if(data[2] & 0x80) {
+      temperature *= -1;
+    }
 
-  data_2 = sTemp;
-  data_3 = sHum;
+    // Imprimir los datos
+    Serial.print("Humedad: ");
+    Serial.print(humidity / 10);
+    Serial.print(".");
+    Serial.print(humidity % 10);
+    Serial.print("%, ");
 
-  delay(20);
-
-
+    Serial.print("Temperatura: ");
+    Serial.print(temperature / 10);
+    Serial.print(".");
+    Serial.print(temperature % 10);
+    Serial.println("°C");
+  } else {
+    Serial.println("Error al leer datos del sensor DHT22");
   }
+}
