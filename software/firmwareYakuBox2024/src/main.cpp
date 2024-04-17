@@ -2,7 +2,7 @@
 #include <WiFi.h>                   // Biblioteca para gestión de WiFi
 #include <WiFiManager.h>            // Biblioteca para configuración WiFi simplificada
 #include <PubSubClient.h>           // Biblioteca PubSubClient para comunicación MQTT
-//#include <WiFiClientSecure.h>
+#include <WiFiClientSecure.h>
 
 
 //*************************************
@@ -35,7 +35,7 @@ const char* mqtt_user = "6aL4uU9b5axRmJv";  // Reemplaza con tu usuario EMQX (op
 const char* mqtt_pass = "contraseña_emqx"; // Reemplaza con tu contraseña EMQX (opcional)
 
 // Crear una instancia de WiFiClientSecure
-WiFiClient espClient;
+WiFiClientSecure espClient;
 
 // Instancia del cliente MQTT
 PubSubClient mqttclient(espClient); // Cliente MQTT (espClient es la instancia de WiFiClient)

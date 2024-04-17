@@ -9,7 +9,7 @@
 #include <WiFiManager.h>
 #include <Separador.h>
 #include <PubSubClient.h>
-//#include <WiFiClientSecure.h>
+#include <WiFiClientSecure.h>
 
 #include <SPI.h>
 #include <Wire.h>             // libreria para bus I2C
@@ -150,9 +150,9 @@ char mqtt_pass[20] = "";
 const int expected_topic_length = 26;
 
 WiFiManager wifiManager;
-WiFiClient client;
+WiFiClientSecure client;
 PubSubClient mqttclient(client);
-WiFiClient client2;
+WiFiClientSecure client2;
 
 Separador s;
 
@@ -329,7 +329,7 @@ void loop()
 
       delay(10);
 
-      //send_to_database();
+      send_to_database();
 
       /*
         if (ph >=0 || ph <=20){
@@ -382,15 +382,17 @@ void reconnect()
 
   while (!mqttclient.connected())
   {
-    Serial.print("Intentando conexión MQTT SSL");
+    Serial.println("Intentando conexión MQTT SSL");
     // we create client id
     String clientId = "esp32_fmg_";
     clientId += String(random(0xffff), HEX);
+    Serial.print("El ClientID es:  ");
+    Serial.println(clientId);
     // Trying SSL MQTT connection
     if (mqttclient.connect(clientId.c_str(), mqtt_user, mqtt_pass))
     {
-      Serial.println("Connected!"); 
-      // We subscribe to topic
+      Serial.println("Conectado al Broker EMQX!"); 
+      // Nos  Suscribimos al Topic 
 
       mqttclient.subscribe(device_topic_subscribe);
     }
@@ -401,7 +403,7 @@ void reconnect()
       Serial.println(" Intentamos de nuevo en 5 segundos");
 
       delay(100);
-      ReStartESP();
+     // ReStartESP();
     }
   }
 }
@@ -609,7 +611,7 @@ void Temp()
   int x = (1000 * ( y ) / 9107.0) + 6.5;
   data_2 = temp = x; // Variable de temperatura que se va a mostrar
   Serial.print("TEMP= ");
-  Serial.println(temp); 
+  Serial.println(data_2); 
   // delay(10);
 }
 
