@@ -84,7 +84,7 @@ byte slider = 0;
 int data_1;
 float data_2; // DHT22 - TEMP
 float data_3; // DHT22 - HUM
-float data_4 =  random(1,14); // PH H20
+float data_4 =  random(0,1401)/100.0; // PH H20
 int data_5 =  random(5,20);
 float data_6;
 int data_7 =  random(5,20);
