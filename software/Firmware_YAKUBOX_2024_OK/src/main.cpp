@@ -10,6 +10,13 @@
 #include <Separador.h>
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
+#include <DHT.h>
+
+#define DHTPIN 34   // Pin de datos del sensor DHT22
+#define DHTTYPE DHT22 // Tipo de sensor DHT22
+
+DHT dht(DHTPIN, DHTTYPE);
+
 
 
 
@@ -64,6 +71,9 @@ void reconnect();
 void send_mqtt_data();
 void send_to_database();
 
+//SENSORES
+void fDht22();
+
 
 
 //*************************************
@@ -80,20 +90,23 @@ byte sw1 = 0;
 byte sw2 = 0;
 byte slider = 0;
 
+
 //STRING DATA BASE
 int data_1;
 float data_2; // DHT22 - TEMP
 float data_3; // DHT22 - HUM
-float data_4 =  random(0,1401)/100.0; // PH H20
-int data_5 =  random(5,20);
-float data_6;
-int data_7 =  random(5,20);
-int data_8 =  random(5,20);
-int data_9 =  random(3,20);
+float data_4; // PH H2O
+int data_5;
+int data_6;
+int data_7;
+int data_8;
+int data_9;
 int data_10;
+
 
 void setup() {
   randomSeed(analogRead(0));
+
 
   pinMode(LED,OUTPUT);
 
@@ -104,7 +117,7 @@ void setup() {
   ledcAttachPin(LED, ledChannel);
 
   Serial.begin(115200);
-
+  dht.begin();
 
   pinMode(WIFI_PIN,INPUT_PULLUP);
 
@@ -131,6 +144,10 @@ void setup() {
 
 void loop() {
 
+
+    //Llamadas de Funciones
+    fDht22();
+
   if (!client.connected()) {
 		reconnect();
 	}
@@ -149,9 +166,16 @@ void loop() {
 
     if(mqttclient.connected()){
       //set mqtt cert
-      data_2 = temp = random(0,500) /10;
-      data_3 = hum = random(0,99);
-      data_3 = random(0,1401)/100.0;
+
+      data_1 = 0;
+      data_4 =  random(0,1401)/100.0; // PH H20
+      data_5 =  random(5,20);
+      data_6 =  random(0,50);
+      data_7 =  random(1,33);
+      data_8 =  random(2,57);
+      data_9 =  random(3,20);
+      data_10 = 0;
+
 
       String to_send = String(data_1) + "," + String(data_2) + "," + String(data_3) + "," + String(data_4) + "," + String(data_5) + "," + String(data_6) + "," + String(data_7) + "," + String(data_8) + "," + String(data_10) + "," + String(sw1)+","+ String(sw2);
       to_send.toCharArray(msg,20);
@@ -339,3 +363,35 @@ void send_to_database(){
 //*********************************************
 //*********** FUNCIONES SENSORES **************
 //*********************************************
+
+
+//FUNCION SENSOR DHT22 (HUM & TEMP AMBIENTE)
+
+void fDht22(){
+
+// Leer la temperatura y la humedad del sensor
+  float sTemp = dht.readTemperature();
+  float sHum = dht.readHumidity();
+
+  // Verificar si se leyó correctamente la información
+  if (isnan(sTemp) || isnan(sHum)) {
+    Serial.println("Fallo al leer el sensor DHT22!");
+    return;
+  }
+
+  // Imprimir los valores de temperatura y humedad
+  Serial.print("Temperatura: ");
+  Serial.print(sTemp);
+  Serial.print(" °C");
+  Serial.print("  Humedad: ");
+  Serial.print(sHum);
+  Serial.print("%");
+  Serial.println();
+
+  data_2 = sTemp;
+  data_3 = sHum;
+
+  delay(20);
+
+
+  }
