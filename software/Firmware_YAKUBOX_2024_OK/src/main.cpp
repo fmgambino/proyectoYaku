@@ -151,7 +151,8 @@ void loop() {
       //set mqtt cert
       data_2 = temp = random(0,500) /10;
       data_3 = hum = random(0,99);
-      String to_send = String(data_2) + "," + String(data_3) + "," + String(sw1)+","+ String(sw2);
+
+      String to_send = String(data_1) + "," + String(data_2) + "," + String(data_3) + "," + String(data_4) + "," + String(data_5) + "," + String(data_6) + "," + String(data_7) + "," + String(data_8) + "," + String(data_10) + "," + String(sw1)+","+ String(sw2);
       to_send.toCharArray(msg,20);
       mqttclient.publish(device_topic_publish,msg);
 
