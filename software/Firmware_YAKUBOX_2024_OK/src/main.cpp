@@ -82,9 +82,9 @@ byte slider = 0;
 
 //STRING DATA BASE
 int data_1;
-float data_2;
-float data_3;
-int data_4 =  random(5,20);
+float data_2; // DHT22 - TEMP
+float data_3; // DHT22 - HUM
+float data_4 =  random(1,14); // PH H20
 int data_5 =  random(5,20);
 float data_6;
 int data_7 =  random(5,20);
@@ -117,7 +117,7 @@ void setup() {
 
   while(!topic_obteined){
     topic_obteined = get_topic(expected_topic_length);
-    delay(300);
+    delay(30);
   }
 
 
@@ -156,9 +156,8 @@ void loop() {
       to_send.toCharArray(msg,20);
       mqttclient.publish(device_topic_publish,msg);
 
-      if (temp>47 || temp < 3){
         send_to_database();
-      }
+      
     }
 
   }
@@ -225,7 +224,7 @@ void reconnect() {
 			Serial.print(mqttclient.state());
 			Serial.println(" Intentamos de nuevo en 5 segundos");
 
-			delay(500);
+			delay(50);
 		}
 	}
 }
