@@ -37,7 +37,7 @@ const int resolution = 8; //Resolution 8, 10, 12, 15
 
 //estos datos deben estar configurador también en las constantes de tu panel
 // NO USES ESTOS DATOS PON LOS TUYOS!!!!
-const String serial_number = "797079";
+const String serial_number = "808080";
 const String insert_password = "285289";
 const String get_data_password = "420285";
 const char *server = "yakubox.info";
@@ -82,7 +82,7 @@ void fDht22();
 bool topic_obteined = false;
 char device_topic_subscribe [40];
 char device_topic_publish [40];
-char msg[25];
+char msg[40];
 float temp = 0;
 int hum = 0;
 long milliseconds = 0;
@@ -96,8 +96,8 @@ int data_1;
 float data_2; // DHT22 - TEMP
 float data_3; // DHT22 - HUM
 float data_4; // PH H2O
-int data_5;
-int data_6;
+float data_5;
+float data_6;
 int data_7;
 int data_8;
 int data_9;
@@ -168,18 +168,18 @@ void loop() {
     if(mqttclient.connected()){
       //set mqtt cert
 
-      data_1 = 0;
+      data_1 = 1;
       data_4 =  random(0,1401)/100.0; // PH H20
-      data_5 =  random(5,20);
-      data_6 =  random(0,50);
-      data_7 =  random(1,33);
-      data_8 =  random(2,57);
-      data_9 =  random(3,20);
-      data_10 = 0;
+      data_5 =  random(0,200);
+      data_6 =  random(0,3);
+      data_7 =  random(0,100);
+      data_8 =  random(0,8);
+      data_9 =  random(0,9);
+      data_10 = random(0,10);
 
 
       String to_send = String(data_1) + "," + String(data_2) + "," + String(data_3) + "," + String(data_4) + "," + String(data_5) + "," + String(data_6) + "," + String(data_7) + "," + String(data_8) + "," + String(data_9) + "," + String(data_10);
-      to_send.toCharArray(msg,20);
+      to_send.toCharArray(msg,40);
       mqttclient.publish(device_topic_publish,msg);
 
         send_to_database();
@@ -330,7 +330,7 @@ void send_to_database(){
   }else {
     Serial.println("Conectados a servidor para insertar en db - ok");
     // Make a HTTP request:
-    String data = "idp="+insert_password+"&sn="+serial_number+"&data_1="+String(data_1)+"&data_2="+String(data_2)+"&data_3="+String(data_3)+"&data_4="+String(data_4)+"&data_5="+String(data_5)+"&data_6="+String(random(0.1,3.0))+"&data_7="+String(data_7)+"&data_8="+String(data_8)+"&data_9="+String(data_9)+"&data_10="+String(data_10)+"\r\n";
+    String data = "idp="+insert_password+"&sn="+serial_number+"&data_1="+String(data_1)+"&data_2="+String(data_2)+"&data_3="+String(data_3)+"&data_4="+String(data_4)+"&data_5="+String(data_5)+"&data_6="+String(data_6)+"&data_7="+String(data_7)+"&data_8="+String(data_8)+"&data_9="+String(data_9)+"&data_10="+String(data_10)+"\r\n";
     client2.print(String("POST ") + "/app/insertdata/insert" + " HTTP/1.1\r\n" +\
                  "Host: " + server + "\r\n" +\
                  "Content-Type: application/x-www-form-urlencoded"+ "\r\n" +\
