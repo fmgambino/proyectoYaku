@@ -37,7 +37,15 @@ const int resolution = 8; //Resolution 8, 10, 12, 15
 
 //estos datos deben estar configurador también en las constantes de tu panel
 // NO USES ESTOS DATOS PON LOS TUYOS!!!!
+<<<<<<< HEAD
 const String serial_number = "797179";
+=======
+<<<<<<< HEAD
+const String serial_number = "797179";
+=======
+const String serial_number = "808080";
+>>>>>>> b373a96ab94e4898f6b6a2e518a67731fef58aa6
+>>>>>>> 00cfb2aef68c351b1424fb2ae29a111edf96e76e
 const String insert_password = "285289";
 const String get_data_password = "420285";
 const char *server = "yakubox.info";
@@ -60,7 +68,10 @@ WiFiClientSecure client2;
 Separador s;
 
 
-
+//************************************
+//***** DECLARACION VARIABLES********
+//************************************
+const int batteryPin = 15;  // Pin analógico donde se conecta la batería
 
 //************************************
 //***** DECLARACION FUNCIONES ********
@@ -73,6 +84,11 @@ void send_to_database();
 
 //SENSORES
 void fDht22();
+
+
+//ACTUADORES 
+void fNivelBat();
+
 
 
 
@@ -148,6 +164,8 @@ void loop() {
 
     //Llamadas de Funciones
     fDht22();
+    fNivelBat();
+
 
   if (!client.connected()) {
 		reconnect();
@@ -236,7 +254,7 @@ void reconnect() {
 	while (!mqttclient.connected()) {
 		Serial.println("Intentando conexión MQTT SSL");
 		// we create client id
-		String clientId = "esp32_ia_";
+		String clientId = "esp32_fmg_";
 		clientId += String(random(0xffff), HEX);
 		// Trying SSL MQTT connection
 		if (mqttclient.connect(clientId.c_str(),mqtt_user,mqtt_pass)) {
@@ -389,3 +407,43 @@ void fDht22() {
   data_2 = dTemp;
   data_3 = dHum;
 }
+
+//*********************************************
+//*********** FUNCIONES ACTUADORES **************
+//*********************************************
+
+//FUNCION NIVEL BATERIA
+void fNivelBat()
+{
+// Lee el valor del pin analógico (entre 0 y 4095)
+  int sensorValue = analogRead(batteryPin);
+  
+  // Convierte el valor del pin analógico a un voltaje (0 - 3.3V)
+  float voltage = sensorValue * (3.3 / 4095.0);
+  
+  // Mapear el voltaje a un nivel de batería en porcentaje
+  // Supongamos que el voltaje de la batería va de 3.0V (0%) a 4.2V (100%)
+  int batteryLevel = map(sensorValue, 0, 4095, 0, 100);
+
+  // Imprime el voltaje y el nivel de batería en porcentaje
+  Serial.print("Voltage: ");
+  Serial.print(voltage);
+  Serial.print(" V, Battery Level: ");
+  Serial.print(batteryLevel);
+  Serial.println("%");
+  
+  delay(500); // Espera 1 segundo antes de tomar otra lectura
+
+}
+
+
+
+//FUNCION RELAY
+
+
+//FUNCION MOSFET01
+
+
+//FUNCION MOSFET02
+
+
