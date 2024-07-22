@@ -37,8 +37,17 @@ const int resolution = 8; //Resolution 8, 10, 12, 15
 
 //estos datos deben estar configurador también en las constantes de tu panel
 // NO USES ESTOS DATOS PON LOS TUYOS!!!!
-
+<<<<<<< HEAD
+=======
 const String serial_number = "797179";
+=======
+<<<<<<< HEAD
+const String serial_number = "797179";
+=======
+const String serial_number = "808080";
+>>>>>>> b373a96ab94e4898f6b6a2e518a67731fef58aa6
+>>>>>>> 00cfb2aef68c351b1424fb2ae29a111edf96e76e
+>>>>>>> 46029d22459069c52a7ee1c4a888fe92a7d34963
 const String insert_password = "285289";
 const String get_data_password = "420285";
 const char *server = "yakubox.info";
