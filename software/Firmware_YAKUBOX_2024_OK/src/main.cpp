@@ -13,7 +13,7 @@
 
 #include <DHT.h>
 
-#define DHTPIN 32 // Pin conectado al sensor DHT22
+#define DHTPIN 4 // Pin conectado al sensor DHT22. FUNIONABA CON PIN 32
 #define DHTTYPE DHT22 // Tipo de sensor DHT
 
 DHT dht(DHTPIN, DHTTYPE); // Crea una instancia del objeto DHT
@@ -37,11 +37,8 @@ const int resolution = 8; //Resolution 8, 10, 12, 15
 
 //estos datos deben estar configurador también en las constantes de tu panel
 // NO USES ESTOS DATOS PON LOS TUYOS!!!!
-<<<<<<< HEAD
+
 const String serial_number = "797179";
-=======
-const String serial_number = "808080";
->>>>>>> b373a96ab94e4898f6b6a2e518a67731fef58aa6
 const String insert_password = "285289";
 const String get_data_password = "420285";
 const char *server = "yakubox.info";
@@ -67,7 +64,9 @@ Separador s;
 //************************************
 //***** DECLARACION VARIABLES********
 //************************************
-const int batteryPin = 15;  // Pin analógico donde se conecta la batería
+const int batteryPin = 34;  // Pin analógico donde se conecta la batería
+const int NTC_PIN= 32;       // Pin analogico donde se conecta NTC 2,7k
+const int COOLER_PIN=27;    // gpio 25 conectado al relay
 
 //************************************
 //***** DECLARACION FUNCIONES ********
@@ -78,14 +77,19 @@ void reconnect();
 void send_mqtt_data();
 void send_to_database();
 
-//SENSORES
+//************************************
+//**************SENSORES**************
+//************************************
 void fDht22();
 
 
-//ACTUADORES 
+//***********************************
+//*************ACTUADORES************
+//*********************************** 
+
 void fNivelBat();
 
-
+void controlCooler();
 
 
 //*************************************
@@ -134,7 +138,7 @@ void setup() {
   
   pinMode(WIFI_PIN,INPUT_PULLUP);
 
-  wifiManager.autoConnect("YAKU Admin");
+  wifiManager.autoConnect("  Admin");
   Serial.println("Conexión a WiFi exitosa!");
 
 
@@ -161,6 +165,7 @@ void loop() {
     //Llamadas de Funciones
     fDht22();
     fNivelBat();
+    controlCooler();
 
 
   if (!client.connected()) {
@@ -378,9 +383,32 @@ void send_to_database(){
 //*********************************************
 //*********** FUNCIONES SENSORES **************
 //*********************************************
+void controlCooler() 
+{
+  int analogValue = analogRead(NTC_PIN);
+  //float resistance = (4095.0 / analogValue - 1) * 10000;  // Calcular la resistencia del NTC
+  //float temperatureK = 1 / (1 / ROOM_TEMP + log(resistance / ROOM_RESISTANCE) / BETA);  // Calcular la temperatura en Kelvin
+  //float temperatureC = temperatureK - 273.15;  // Convertir a grados Celsius
 
+  float Vntc = analogValue * (3.3 / 4095.0);
 
+  Serial.print("Vntc: ");
+  Serial.print(Vntc);
+  Serial.println(" V");
+
+  delay(500); // Espera 1 segundo antes de tomar otra lectura
+
+  // Control del cooler basado en la temperatura
+  if (Vntc <= 2.5) {
+    digitalWrite(COOLER_PIN, LOW);  // Encender el cooler
+  } else if (Vntc >= 3.1) {
+    digitalWrite(COOLER_PIN, HIGH);  // Apagar el cooler
+  }
+}
+
+//*********************************************
 //FUNCION SENSOR DHT22 (HUM & TEMP AMBIENTE)
+//*********************************************
 void fDht22() {
   // Lee la temperatura y la humedad del sensor DHT22
   float dTemp = dht.readTemperature();
@@ -405,10 +433,12 @@ void fDht22() {
 }
 
 //*********************************************
-//*********** FUNCIONES ACTUADORES **************
+//*********** FUNCIONES ACTUADORES ************
 //*********************************************
 
-//FUNCION NIVEL BATERIA
+//*********************************************
+//********FUNCION NIVEL BATERIA****************
+//*********************************************
 void fNivelBat()
 {
 // Lee el valor del pin analógico (entre 0 y 4095)
@@ -435,6 +465,8 @@ void fNivelBat()
 
 
 //FUNCION RELAY
+
+
 
 
 //FUNCION MOSFET01
