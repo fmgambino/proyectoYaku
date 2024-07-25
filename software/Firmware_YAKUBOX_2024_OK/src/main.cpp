@@ -9,7 +9,8 @@
 #include <Separador.h>
 #include <PubSubClient.h>
 #include <WiFiClientSecure.h>
-
+#include <OneWire.h>
+#include <DallasTemperature.h>
 #include <DHT.h>
 
 #define DHTPIN 4 // Pin conectado al sensor DHT22. FUNIONABA CON PIN 32
@@ -17,6 +18,19 @@
 
 DHT dht(DHTPIN, DHTTYPE); // Crea una instancia del objeto DHT
 
+// Definir los pines del sensor HC-SR04
+#define TRIG_PIN 5
+#define ECHO_PIN 18
+
+// Definir lpin Sensor PH
+const int PhMeterPin = 32;
+
+// Definir el pin del bus OneWire donde está conectado el DS18B20
+#define ONE_WIRE_BUS 12
+
+// Configurar el bus OneWire y la instancia de DallasTemperature
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire);
 
 //*********************************
 //*********** CONFIG **************
@@ -25,6 +39,14 @@ DHT dht(DHTPIN, DHTTYPE); // Crea una instancia del objeto DHT
 
 #define WIFI_PIN 17
 #define LED 2 //On Board LED
+const int PhMetroPin = 35; 
+
+//PH METETRO - CONFIG
+int Valor = 0; 
+unsigned long int promValor; //Variable para almacenar 10 muestras
+float b;
+int buf[10],phTemp;
+
 
 int brightness = 0;    // how bright the LED is
 int fadeAmount = 5;    // how many points to fade the LED by
@@ -66,6 +88,8 @@ Separador s;
 const int batteryPin = 34;  // Pin analógico donde se conecta la batería
 const int NTC_PIN= 32;       // Pin analogico donde se conecta NTC 2,7k
 const int COOLER_PIN=27;    // gpio 25 conectado al relay
+float dTempH2O = 0.0;       // Definir la variable global para la temperatura
+
 
 //************************************
 //***** DECLARACION FUNCIONES ********
@@ -80,7 +104,11 @@ void send_to_database();
 //**************SENSORES**************
 //************************************
 void fDht22();
-
+void setupDS18B20();
+void ftempH2O();
+void phMeter();
+float readUltrasonicDistance();
+float calculateCylinderVolumen(float altura);
 
 //***********************************
 //*************ACTUADORES************
@@ -100,6 +128,7 @@ char device_topic_publish [40];
 char msg[40];
 float temp = 0;
 int hum = 0;
+float dPh;
 long milliseconds = 0;
 byte sw1 = 0;
 byte sw2 = 0;
@@ -111,7 +140,7 @@ int data_1;
 float data_2; // DHT22 - TEMP
 float data_3; // DHT22 - HUM
 float data_4; // PH H2O
-float data_5;
+float data_5; // DS18b20
 float data_6;
 int data_7;
 int data_8;
@@ -124,10 +153,14 @@ void setup() {
   Serial.begin(115200);
   dht.begin(); // Inicializa la librería DHT
 
+  setupDS18B20(); // Inicializa DS18b20
+
   randomSeed(analogRead(0));
 
-
   pinMode(LED,OUTPUT);
+  // Configurar los pines del sensor ultrasónico
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
 
   // configure LED PWM functionalitites
   ledcSetup(ledChannel, freq, resolution);
@@ -163,8 +196,12 @@ void loop() {
 
     //Llamadas de Funciones
     fDht22();
+    ftempH2O();
     fNivelBat();
     controlCooler();
+    phMeter(); // Se llama a la Funcion de Calibracion PHmetro    
+    float altura = readUltrasonicDistance();
+    float dVolumen = calculateCylinderVolumen(altura);  
 
 
   if (!client.connected()) {
@@ -187,9 +224,9 @@ void loop() {
       //set mqtt cert
 
       data_1 = 1;
-      data_4 =  random(0,1401)/100.0; // PH H20
-      data_5 =  random(0,200);
-      data_6 =  random(0,3);
+      data_4 =  dPh;            // PH H20
+      data_5 =  dTempH2O;       // DS18b20
+      data_6 =  dVolumen;       // HC-SR04
       data_7 =  random(0,100);
       data_8 =  random(0,8);
       data_9 =  random(0,9);
@@ -471,4 +508,73 @@ void fNivelBat()
 
 //FUNCION MOSFET02
 
+// FUNCION SENSOR TEMP DS15B20
+// Función para inicializar el sensor DS18B20
+void setupDS18B20() {
+    sensors.begin();
+}
 
+// Función para leer la temperatura del DS18B20
+void ftempH2O() {
+    sensors.requestTemperatures();
+    dTempH2O = sensors.getTempCByIndex(0); // Asumiendo que hay solo un sensor en el bus
+}
+
+// FUNCION SENSOR ULTRASONICO HC-SR04
+// Función para leer la distancia desde el sensor ultrasónico
+float readUltrasonicDistance() {
+    // Enviar un pulso de 10us al pin TRIG
+    digitalWrite(TRIG_PIN, LOW);
+    delayMicroseconds(2);
+    digitalWrite(TRIG_PIN, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TRIG_PIN, LOW);
+    
+    // Leer el tiempo de duración del pulso ECHO
+    long duration = pulseIn(ECHO_PIN, HIGH);
+    
+    // Calcular la distancia en cm
+    float distance = duration * 0.034 / 2;
+    
+    return distance;
+}
+// Función para calcular el Volumen de un cilindro
+float calculateCylinderVolumen(float altura) {
+    float radius = 30.0 / 2.0; // Radio en cm (diámetro de 30 cm)
+    float dVolumen = 3.14159 * radius * radius * altura; // Volumen en cm^3
+    return dVolumen;
+}
+
+
+// PH METER FUNCION
+
+  void phMeter()
+  {
+    for(int i=0;i<10;i++) 
+ { 
+  buf[i]=analogRead(PhMetroPin); //Almacenos la lectura analogica
+  //delay(10);
+ }
+ for(int i=0;i<9;i++)
+ {
+  for(int j=i+1;j<10;j++)
+  {
+   if(buf[i]>buf[j])
+   {
+    phTemp=buf[i];
+    buf[i]=buf[j];
+    buf[j]=phTemp;
+   }
+  }
+ }
+ promValor=0;
+ for(int i=2;i<8;i++)
+ promValor+=buf[i];
+ float pHVol=(float)promValor*5.0/4095/6;
+ float ph = (3.5*pHVol)+1.70;
+ dPh = ph;
+ Serial.print("Ph= ");
+ Serial.println(hum);
+ 
+ //delay(10);
+  }
