@@ -413,7 +413,7 @@ void fDht22() {
 
   // Comprueba si alguna lectura falló y sale si es así
   if (isnan(dTemp) || isnan(dHum)) {
-    Serial.println("¡Error al leer del sensor DHT22!");
+    Serial.println("¡Error al leer del sensor DHT22! ");
     return;
   }
 
